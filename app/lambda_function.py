@@ -39,7 +39,7 @@ def _page(request_id: str) -> str:
   <div class="shell">
     <nav><div class="brand"><i class="orb"></i> ORBIT</div><div class="pill">AWS · PYTHON · TERRAFORM</div></nav>
     <main><section class="hero">
-      <div class="eyebrow">Small footprint · Big horizon</div>
+      <div class="eyebrow">Deployed locally · Automated globally</div>
       <h1>Ship ideas at <span>light speed.</span></h1>
       <p class="lead">A zero-database, serverless landing page powered by Python, AWS Lambda, and API Gateway. Repeatable infrastructure, delivered as code.</p>
       <div class="cards">

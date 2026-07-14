@@ -22,7 +22,7 @@ An AWS account can have only one provider for the GitHub token URL. This project
 1. Edit the application or Terraform.
 2. Run `python -m unittest discover -s tests -v`, `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\package.ps1`, and `terraform fmt -recursive terraform`.
 3. Open a pull request; offline checks validate untrusted changes without AWS credentials.
-4. Merge to `main`. The protected deployment job assumes the OIDC role, plans, and applies.
+4. Merge to `master`. The protected deployment job assumes the OIDC role, plans, and applies.
 5. Check the workflow summary URL and the page. For infrastructure changes, inspect the `Create plan` log before approving the protected `dev` environment.
 
 ## Verification and troubleshooting
@@ -34,13 +34,13 @@ aws logs tail /aws/lambda/orbit-site-dev --since 10m --follow
 ```
 
 - **403 from API Gateway:** Check `aws_lambda_permission.api_gateway` and that the request uses `GET`.
-- **OIDC access denied:** Confirm `AWS_ROLE_ARN`, repository owner/name, the `main` branch, and the workflow's `id-token: write` permission.
+- **OIDC access denied:** Confirm `AWS_ROLE_ARN`, repository owner/name, the `master` branch, and the workflow's `id-token: write` permission.
 - **State lock exists:** First confirm no deployment is active. Terraform normally removes the `.tflock` object; use `terraform force-unlock LOCK_ID` only after confirming the lock is stale.
 - **Package path error:** Run `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\package.ps1` before a local plan. CI packages the same handler before validation and deployment.
 
 ## Rollback
 
-Application code is immutable in Git. Revert the faulty commit and merge/push the revert to `main`; the workflow packages and deploys the previous handler. For an urgent operator rollback, check out the known-good commit locally and run a saved plan/apply against the same backend.
+Application code is immutable in Git. Revert the faulty commit and merge/push the revert to `master`; the workflow packages and deploys the previous handler. For an urgent operator rollback, check out the known-good commit locally and run a saved plan/apply against the same backend.
 
 ## Destroy
 
