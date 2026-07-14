@@ -1,0 +1,93 @@
+name: Terraform
+
+on:
+  pull_request:
+    paths:
+      - "app/**"
+      - "terraform/**"
+      - "tests/**"
+      - ".github/workflows/terraform.yml"
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "terraform/**"
+      - "tests/**"
+      - ".github/workflows/terraform.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terraform-dev
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    name: Test and validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Test application
+        run: python -m unittest discover -s tests -v
+      - name: Package Lambda
+        working-directory: app
+        run: mkdir -p ../build && python -m zipfile -c ../build/orbit-site.zip lambda_function.py
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.5"
+      - name: Check formatting
+        run: terraform fmt -check -recursive terraform
+      - name: Initialize without backend
+        working-directory: terraform/environments/dev
+        run: terraform init -backend=false
+      - name: Validate configuration
+        working-directory: terraform/environments/dev
+        run: terraform validate
+
+  deploy:
+    name: Plan and apply dev
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: checks
+    runs-on: ubuntu-latest
+    environment: dev
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.5"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Authenticate to AWS with OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Package Lambda
+        working-directory: app
+        run: mkdir -p ../build && python -m zipfile -c ../build/orbit-site.zip lambda_function.py
+      - name: Initialize remote state
+        working-directory: terraform/environments/dev
+        run: >-
+          terraform init
+          -backend-config="bucket=${{ vars.STATE_BUCKET }}"
+          -backend-config="region=${{ vars.AWS_REGION }}"
+      - name: Create plan
+        working-directory: terraform/environments/dev
+        run: terraform plan -input=false -out=tfplan
+      - name: Apply reviewed plan
+        working-directory: terraform/environments/dev
+        run: terraform apply -input=false -auto-approve tfplan
+      - name: Publish site URL
+        working-directory: terraform/environments/dev
+        run: |
+          echo "### Site URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "$(terraform output -raw site_url)" >> "$GITHUB_STEP_SUMMARY"

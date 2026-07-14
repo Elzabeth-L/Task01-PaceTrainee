@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.zip
+terraform.tfvars
+backend.hcl
+.DS_Store
+.aws-zscaler-ca.pem
