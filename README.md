@@ -15,7 +15,7 @@ flowchart LR
     G -->|Remote state + lock| S[(Versioned S3 bucket)]
 ```
 
-There is no database, VPC, load balancer, or persistent application storage. See the [complete system and workflow architecture](docs/system-architecture.md) for infrastructure and sequence diagrams, and [Architecture decisions](docs/architecture-decisions.md) for the rationale.
+There is no database, VPC, load balancer, or persistent application storage. View the [standalone SVG architecture](docs/system-architecture.svg), read the [complete system and workflow architecture](docs/system-architecture.md), and see [Architecture decisions](docs/architecture-decisions.md) for the rationale.
 
 ## Prerequisites
 

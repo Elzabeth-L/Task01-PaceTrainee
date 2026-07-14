@@ -2,6 +2,8 @@
 
 This document describes the AWS infrastructure, Terraform delivery workflow, and runtime behavior of the Orbit Python landing page in `ap-south-1`.
 
+For a single standalone visual containing all three views, open [`system-architecture.svg`](system-architecture.svg).
+
 ## 1. AWS infrastructure architecture
 
 ```mermaid
