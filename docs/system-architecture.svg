@@ -143,7 +143,7 @@
   <rect x="1040" y="555" width="435" height="95" class="iam"/>
   <text x="1257" y="585" class="box-title" text-anchor="middle">Inline policy · terraform-application-deploy</text>
   <text x="1257" y="609" class="box-text" text-anchor="middle">State · Lambda · API Gateway · Logs · app IAM roles</text>
-  <text x="1257" y="629" class="tiny" text-anchor="middle">cannot modify its own OIDC trust role</text>
+  <text x="1257" y="629" class="tiny" text-anchor="middle">IAM role resources scoped to orbit-site-* prefix</text>
 
   <rect x="1040" y="680" width="435" height="225" class="state"/>
   <text x="1065" y="711" class="box-title">S3 · orbit-site-tfstate-598120810297-ap-south-1</text>

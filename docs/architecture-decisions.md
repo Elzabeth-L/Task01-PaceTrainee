@@ -38,7 +38,7 @@
 
 **Decision:** GitHub Actions assumes an IAM role through OpenID Connect, restricted to this repository's protected `dev` environment. That environment permits deployments from `master` only.
 
-**Why:** Each run receives short-lived credentials and there are no long-lived AWS secrets to rotate or leak. Pull requests get offline validation only; deployment credentials are issued only to the trusted deployment branch. The role can manage the named application IAM roles and required application services, but cannot modify its own bootstrap trust policy.
+**Why:** Each run receives short-lived credentials and there are no long-lived AWS secrets to rotate or leak. Pull requests get offline validation only; deployment credentials are issued only to the trusted deployment branch. The application stack does not declare the bootstrap role, while the deployment policy manages the required application services and roles under the `orbit-site-*` prefix.
 
 ## Reliability and security controls
 
