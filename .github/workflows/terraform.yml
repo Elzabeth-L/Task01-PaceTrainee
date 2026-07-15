@@ -16,9 +16,6 @@ on:
       - ".github/workflows/terraform.yml"
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 concurrency:
   group: terraform-dev
   cancel-in-progress: false
